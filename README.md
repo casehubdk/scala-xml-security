@@ -12,14 +12,7 @@ Main Features
 
 Installation
 ============
-Add the following line to your project description in `build.sbt`:
-```
-libraryDependencies += "com.github.arturopala" % "scala-xml-security_2.12" % "1.2.0"
-```
-
-You can find available versions here:
-
-[http://search.maven.org/#search|ga|1|scala-xml-security](http://search.maven.org/#search%7Cga%7C1%7Cscala-xml-security)
+Too come
 
 Dependencies
 ------------
