@@ -1,0 +1,25 @@
+load("@io_bazel_rules_scala//scala:scala.bzl", "scala_library")
+load("@scala_things//:flags/flags.bzl", "flags")
+
+scala_library(
+    name = "scala",
+    srcs = glob(["*.scala"]),
+    scalacopts = flags,
+    unused_dependency_checker_ignored_targets = [
+      "@maven//:javax_xml_stream_stax_api",
+      "@maven//:com_sun_xml_bind_jaxb_impl",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+      "@maven//:commons_codec_commons_codec",
+      "@maven//:org_apache_santuario_xmlsec",
+      "@maven//:org_bouncycastle_bcprov_jdk15on",
+      "@maven//:org_bouncycastle_bcpkix_jdk15on",
+      "@maven//:org_json4s_json4s_native_2_13",
+      "@maven//:org_json4s_json4s_core_2_13",
+      "@maven//:org_json4s_json4s_ast_2_13",
+      "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
+      "@maven//:javax_xml_stream_stax_api",
+      "@maven//:com_sun_xml_bind_jaxb_impl",
+    ],
+)

@@ -19,7 +19,6 @@ package com.github.arturopala.xmlsecurity
 import java.nio.charset.Charset
 
 import org.json4s._
-import org.json4s.native.Serialization._
 
 trait Base64 {
   def encodeBase64URLSafe(string: String): String = {

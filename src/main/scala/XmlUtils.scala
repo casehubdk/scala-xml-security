@@ -25,9 +25,9 @@ import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.dom.DOMSource
 import javax.xml.validation.Schema
 import javax.xml.validation.Validator
-import javax.xml.xpath.{XPath, XPathConstants, XPathExpression, XPathExpressionException}
-import org.w3c.dom.{Document, Element, Attr, Node, NodeList, Text}
-import scala.util.{Try, Success, Failure}
+import javax.xml.xpath.{XPath, XPathConstants}
+import org.w3c.dom.{Document, Node, NodeList}
+import scala.util.Try
 
 object XmlUtils {
 
@@ -85,7 +85,7 @@ object XmlUtils {
   def printDocument(dom: Document, omitXmlDec: Boolean = true): Try[String] = Try {
     val clonedDom = dom.copy
     trimWhitespace(clonedDom.getDocumentElement)
-    val xPath: XPath = xpathFactory.newXPath()
+    val _ = xpathFactory.newXPath() // idk if lib has any side-effects
     val transformerFactory: TransformerFactory = TransformerFactory.newInstance()
     val transformer: Transformer = transformerFactory.newTransformer()
     transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
@@ -118,7 +118,7 @@ object XmlUtils {
       log += ("FATAL: " + e.getMessage())
     }
 
-    override def warning(e: SAXParseException) {
+    override def warning(e: SAXParseException): Unit = {
       log += ("WARNING: " + e.getMessage())
     }
 

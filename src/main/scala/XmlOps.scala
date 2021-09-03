@@ -18,9 +18,9 @@ package com.github.arturopala.xmlsecurity
 
 import javax.xml.namespace.NamespaceContext
 import javax.xml.parsers.{DocumentBuilderFactory}
-import javax.xml.xpath.{XPath, XPathConstants, XPathExpression, XPathExpressionException}
+import javax.xml.xpath.{XPath, XPathConstants}
 import javax.xml.xpath.XPathFactory
-import org.w3c.dom.{Document, Element, Attr, Node, NodeList, Text}
+import org.w3c.dom.{Attr, Document, Element, Node, NodeList, Text}
 
 object XmlOps {
 
@@ -37,16 +37,15 @@ object XmlOps {
       NodeSeq(nodelist)
     }
 
-    def getTagTextContent(tag: String): Option[String] = {
+    def getTagTextContent(tag: String): Option[String] =
       dom.getElementsByTagName(tag) match {
         case nl if nl.getLength > 0 =>
           Option(nl.item(0))
             .map(_.getTextContent)
         case _ => None
       }
-    }
 
-    def getAttributeValue(tag: String, attribute: String): Option[String] = {
+    def getAttributeValue(tag: String, attribute: String): Option[String] =
       dom.getElementsByTagName(tag) match {
         case nl if nl.getLength > 0 =>
           Option(nl.item(0))
@@ -54,7 +53,6 @@ object XmlOps {
             .map(_.getNodeValue)
         case _ => None
       }
-    }
 
     def copy: Document = {
       val cloned: Document = documentBuilderFactory.newDocumentBuilder().newDocument()
@@ -71,15 +69,17 @@ object XmlOps {
 
     def children: NodeSeq = NodeSeq(node.getChildNodes)
 
-    def attributes: collection.Map[String, String] = new collection.DefaultMap[String, String] {
+    def attributes: collection.Map[String, String] = new Map[String, String] {
+      def removed(key: String): scala.collection.immutable.Map[String,String] = ???
+      def updated[V1 >: String](key: String, value: V1): scala.collection.immutable.Map[String,V1] = ???
+
       val attrs = node.getAttributes
-      val length = Option(attrs).map(_.getLength).getOrElse(0)
       def get(name: String): Option[String] = Option(attrs).map(_.getNamedItem(name)).map(_.asInstanceOf[Attr].getValue)
       def iterator: Iterator[(String, String)] = new Iterator[(String, String)] {
         var pos = 0
         val maxPos = Option(attrs).map(_.getLength).getOrElse(0)
         def hasNext: Boolean = pos < maxPos
-        def next: (String, String) = {
+        def next(): (String, String) = {
           if (pos >= maxPos) throw new java.util.NoSuchElementException()
           val attr: Attr = attrs.item(pos).asInstanceOf[Attr]
           pos = pos + 1
@@ -90,8 +90,7 @@ object XmlOps {
 
     def toJson: org.json4s.JObject = {
       import org.json4s.JsonAST.JValue
-      import org.json4s.JsonDSL._
-      import org.json4s.{DefaultFormats, JArray, JObject, JString, JNothing}
+      import org.json4s.{JObject, JString}
       node match {
         case elem: Element =>
           val attributes: List[(String, JValue)] = elem.attributes.map({ case (k, v) => (k, JString(v)) }).toList
@@ -112,7 +111,7 @@ object XmlOps {
       var pos = 0
       val maxPos = Option(nodeList).map(_.getLength).getOrElse(0)
       def hasNext: Boolean = pos < maxPos
-      def next: Node = {
+      def next(): Node = {
         if (pos >= maxPos) throw new java.util.NoSuchElementException()
         val item = nodeList.item(pos)
         pos = pos + 1

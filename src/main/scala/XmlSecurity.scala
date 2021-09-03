@@ -16,46 +16,28 @@
 
 package com.github.arturopala.xmlsecurity
 
-import scala.collection.JavaConverters._
-import scala.collection.mutable.{Buffer, Set}
-import java.util.Date
-import java.net.URL
-import scala.util.{Try, Success, Failure}
-import java.io.ByteArrayInputStream
+import scala.util.Try
 import java.security.{Key, PublicKey, PrivateKey}
-import java.security.cert.{Certificate, X509Certificate}
-import javax.crypto.{Cipher, KeyGenerator, NoSuchPaddingException}
-import javax.xml.parsers.{DocumentBuilderFactory}
+import java.security.cert.X509Certificate
+import javax.crypto.KeyGenerator
 import javax.xml.crypto._
 import javax.xml.crypto.dsig._
-import javax.xml.crypto.dom._
 import javax.xml.crypto.dsig.dom._
 import javax.xml.crypto.dsig.keyinfo._
-import javax.xml.xpath.XPathFactory
-import javax.xml.validation.Schema
-import javax.xml.xpath.{XPath, XPathConstants, XPathExpression, XPathExpressionException}
-import org.apache.xml.security.encryption.XMLCipher
 import org.apache.xml.security.encryption.EncryptedData
 import org.apache.xml.security.encryption.EncryptedKey
 import org.apache.xml.security.encryption.XMLCipher
 import org.apache.xml.security.keys.KeyInfo
 import org.apache.xml.security.keys.content.X509Data
-import org.apache.xml.security.keys.content.x509.XMLX509Certificate
-import org.apache.xml.security.utils.Constants
 import org.apache.xml.security.utils.EncryptionConstants
-import org.w3c.dom.{Document, Element, Attr, Node, NodeList, Text}
-import org.w3c.dom.ls.{LSResourceResolver, LSInput}
-import scala.collection.JavaConversions._
-import java.io.StringWriter
-import javax.xml.validation.Validator
-import javax.xml.transform.dom.DOMSource
-import javax.xml.namespace.NamespaceContext
+import org.w3c.dom.{Document, Element, Node}
+import scala.jdk.CollectionConverters._
+import collection.mutable._
 
 // scalastyle:off null
 object XmlSecurity {
 
   import XmlOps._
-  import XmlUtils._
 
   org.apache.xml.security.Init.init()
 
@@ -141,7 +123,7 @@ object XmlSecurity {
       val sv = signature.getSignatureValue().validate(valContext)
       sb.append("status: " + sv)
       if (!sv) {
-        signature.getSignedInfo().getReferences() foreach (
+        signature.getSignedInfo().getReferences().asScala foreach (
           item => {
             val ref = item.asInstanceOf[Reference]
             sb.append(s"; reference ${ref.getId}:${ref.getURI} status: " + ref.validate(valContext))
@@ -166,11 +148,11 @@ object XmlSecurity {
       keySelectorResult(extractKey(keyInfo))
     }
 
-    def extractKey(keyInfo: KeyInfo): PublicKey = keyInfo.getContent()
+    def extractKey(keyInfo: KeyInfo): PublicKey = keyInfo.getContent().asScala
       .map(_.asInstanceOf[XMLStructure] match {
         case k: KeyValue => k.getPublicKey
         case xdata: javax.xml.crypto.dsig.keyinfo.X509Data =>
-          xdata.getContent() collectFirst {
+          xdata.getContent().asScala collectFirst {
             case cert: X509Certificate => cert.getPublicKey
           } getOrElse {
             throw new Exception("X509 certificate not found")
@@ -230,6 +212,7 @@ object XmlSecurity {
     cipher.doFinal(newDom, newDom.getDocumentElement())
   }
 
+  @annotation.nowarn
   private def createEncryptedKey(
     dom:              Document,
     cert:             X509Certificate,
