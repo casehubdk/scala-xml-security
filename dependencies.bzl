@@ -21,6 +21,7 @@ project_deps = [
     # compat
     java_dependency("jakarta.xml.bind", "jakarta.xml.bind-api", "2.3.3"),
     java_dependency("com.sun.xml.bind", "jaxb-impl", "2.3.3"),
+    java_dependency("javax.xml.stream", "stax-api", "1.0-2"),
 ]
 
 def add_scala_fullver(s):
