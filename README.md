@@ -1,8 +1,6 @@
 Scala XML Security
 ==================
 
-[![Build Status](https://semaphoreci.com/api/v1/arturopala/scala-xml-security/branches/master/badge.svg)](https://semaphoreci.com/arturopala/scala-xml-security)
-
 Dealing with XML signatures or encryption requires usually a lot of magic config code followed by copy-pasted boilerplate. This small library wraps for you all the necessary configuration and logic to finally expose simple but essential API.
 
 Main Features
@@ -14,14 +12,7 @@ Main Features
 
 Installation
 ============
-Add the following line to your project description in `build.sbt`:
-```
-libraryDependencies += "com.github.arturopala" % "scala-xml-security_2.12" % "1.2.0"
-```
-
-You can find available versions here:
-
-[http://search.maven.org/#search|ga|1|scala-xml-security](http://search.maven.org/#search%7Cga%7C1%7Cscala-xml-security)
+Too come
 
 Dependencies
 ------------
